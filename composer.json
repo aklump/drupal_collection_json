@@ -1,0 +1,5 @@
+{
+  "autoload": {
+    "psr-0": {"AKlump\\": "loft_php_lib/src/"}  
+  }
+}

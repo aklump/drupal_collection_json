@@ -1,0 +1,131 @@
+<?php
+/**
+ * @file
+ * Base file for the collection_json module.
+ *
+ * @defgroup collection_json Collection Json
+ * @{
+ */
+
+// Path to the admin settings form
+define('COLLECTION_JSON_URL_SETTINGS', 'admin/config/system/collection-json');
+
+/**
+ * Implements hook_init().
+ */
+// function collection_json_init() {
+//   //@todo should we not do this on every page?
+//   module_load_include('php', 'collection_json', 'vendor/autoload'); 
+// }
+
+// /**
+//  * Implements hook_permission().
+//  */
+// function collection_json_permission() {
+//  return array(
+//    'collection_json:administer' => array(
+//      'title' => t('Administer Collection Json'),
+//      'description' => t('Perform administration tasks for Collection Json.'),
+//      'restrict access' => FALSE,
+//    ),
+//  );
+// }
+
+// /**
+//  * Implements hook_menu().
+//  */
+// function collection_json_menu() {
+//   $items = array();
+
+//   $items[COLLECTION_JSON_URL_SETTINGS] = array(
+//    'title' => 'Collection Json',
+//    'description' => 'Administer module configuration settings',
+//    'page callback' => 'drupal_get_form',
+//    'page arguments' => array('collection_json_admin_settings'),
+//    'file' => collection_json_include('admin', 2),
+//    'access arguments' => array('collection_json:administer'),
+//    'type' => MENU_NORMAL_ITEM,
+//   );
+
+//   return $items;
+// }
+
+/**
+ * Include (or return include path to) a collection_json include file(s)
+ *
+ * @code
+ *   'file' => collection_json_include('pages', 2),
+ * @endcode
+ *
+ * @param... string
+ *   Any number of include file keys to include
+ *   For includes/collection_json.example.inc, set this to: example
+ * @param int $action
+ *   The final argument, if numeric is one of.  If omitted 1 is the default.
+ *   1: include the module(s)
+ *   2: return the path relative to the module, e.g., hook_menu()
+ *   3: return the complete Drupal path per drupal_get_path()
+ *
+ * @return string
+ *   The path to the FIRST include file requested, but only if $return is set to TRUE
+ */
+function collection_json_include() {
+  $includes = func_get_args();
+  if (is_numeric(end($includes))) {
+    $action = array_pop($includes);
+  }
+  else {
+    $action = 1;
+  }
+  if ($action > 1) {
+    $module = 'includes/collection_json.' .  reset($includes) . '.inc';
+    switch ($action) {
+      case 3:
+        $module = drupal_get_path('module', 'collection_json') . '/' . $module;
+        break;
+    }
+    return $module;
+  }
+  reset($includes);
+  foreach ($includes as $include_name) {
+    module_load_include('inc', 'collection_json', 'includes/collection_json.' . $include_name);
+  }
+}
+
+/**
+ * Implements hook_admin_paths().
+ */
+function collection_json_admin_paths() {
+  return array('help/*');
+}
+
+/**
+ * Triggered when the REST server request a list of available request parsers.
+ *
+ * @param array $parsers
+ *  An associative array of parser callbacks keyed by mime-type.
+ * @return void
+ */
+function collection_json_rest_server_request_parsers_alter(&$parsers) {
+  $parsers['application/vnd.collection+json'] = 'RESTServerCollectionJSON::parseCollectionJSON';
+}
+
+/**
+ * Triggered when the REST server request a list of supported response formats.
+ *
+ * @param array $formatters
+ *  An associative array of formatter info arrays keyed by type extension. The
+ *  formatter info specifies an array of 'mime types' that corresponds to the
+ *  output format; a 'view' class that is a subclass of RESTServerView; and
+ *  'view arguments' that should be passed to the view when it is created;
+ *  a 'model' can also be specified which the controller then must declare
+ *  support for to be able to serve data in that format.
+ * @return void
+ */
+function collection_json_rest_server_response_formatters_alter(&$formatters) {
+  $formatters['collection_json'] = array(
+    'mime types' => array('application/vnd.collection+json'),
+    'view' => 'RESTServerViewBuiltIn',
+    'view arguments' => array('format' => 'collection_json'),
+  );
+}
