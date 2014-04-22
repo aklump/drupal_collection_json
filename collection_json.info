@@ -1,9 +1,14 @@
-name = Collection Json
-description = "Provides custom Drupal integration for Collection Json."
+name = Collection+Json
+description = "Provides a Collection+Json parser and formatter to the Services REST module."
 package = Other
 version = 7.x-0.1
 core = 7.x
 
+dependencies[] = rest_server
+
 files[] = includes/RESTServerCollectionJSON.php
+files[] = includes/RESTServerViewCollectionJSON.php
+
+
 ;files[] = tests/collection_json.test
 ;files[] = tests/collection_json.phpunit.test

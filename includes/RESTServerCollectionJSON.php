@@ -1,6 +1,11 @@
 <?php
-use \AKlump\LoftLib\Api\CollectionJsonToJson;
-use \AKlump\LoftLib\Api\Payload;
+/**
+ * @file
+ * Defines an extension class for parseing Collection+Json
+ */
+use \AKlump\Http\CollectionJson\CollectionJsonToJson;
+use \AKlump\Http\Transfer\Payload;
+
 /**
  * Represents a rest server object with support for CollectionJSON.
  */
@@ -16,7 +21,7 @@ class RESTServerCollectionJSON extends RESTServer {
   public function parseCollectionJSON($handle) {
     $data = '';
     if (($source = self::contentFromStream($handle))) {
-      module_load_include('php', 'collection_json', 'vendor/autoload');
+      collection_json_load();
       $source = new Payload('application/vnd.collection+json', $source);
       $data = json_decode(CollectionJsonToJson::translate($source)->getContent(), TRUE);
     }

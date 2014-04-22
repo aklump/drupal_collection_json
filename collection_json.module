@@ -123,9 +123,29 @@ function collection_json_rest_server_request_parsers_alter(&$parsers) {
  * @return void
  */
 function collection_json_rest_server_response_formatters_alter(&$formatters) {
+
+  // Set this up to be able to convert our custom object if needed
+  foreach ($formatters as $key => $value) {
+    if ($formatters[$key]['view'] === 'RESTServerViewBuiltIn') {
+      $formatters[$key]['view arguments']['view'] = $formatters[$key]['view'];
+      $formatters[$key]['view'] = 'RESTServerViewCollectionJSON';
+    }
+  }
+
   $formatters['collection_json'] = array(
     'mime types' => array('application/vnd.collection+json'),
-    'view' => 'RESTServerViewBuiltIn',
+    'view' => 'RESTServerViewCollectionJSON',
     'view arguments' => array('format' => 'collection_json'),
   );
+}
+
+/**
+ * Load the necessary library files to make classes available
+ *
+ * Use this whenever you need to instantiate an object.  For classes refer
+ * to vendor/AKlump/Http.  For example usage take a look at:
+ * includes/RESTServerCollectionJSON.php
+ */
+function collection_json_load() {
+  module_load_include('php', 'collection_json', 'vendor/autoload');
 }
