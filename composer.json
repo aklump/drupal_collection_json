@@ -1,5 +1,5 @@
 {
-  "autoload": {
-    "psr-0": {"AKlump\\": "vendor/"}  
+  "require" : {
+    "aklump/collection_json": ">=0.1"
   }
 }

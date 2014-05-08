@@ -17,6 +17,30 @@ You may also visit the [project page](http://www.drupal.org/project/collection_j
 
 ##Suggested Use
 
+These are helpful functions to know
+
+### Collection objects
+You'll want to use this because it will construct an object using the current URL as the collection's href.
+
+    collection_json_new_collection()
+
+### Entity-based Collections
+If your collection is based on an array of entities you may pass the ids to this function.
+
+    collection_json_entity_collection()
+
+### Entities as Items
+Use these two functions to add an entity to a collection as an item.  Use the latter to fine tune the format.
+
+    collection_json_entity_item()
+    hook_collection_json_entity_item_alter()
+
+### Bundle-based Template
+Use these functions to add an bundle type template to a collection; again, the latter to tweak the format.
+
+    collection_json_bundle_template()
+    hook_collection_json_bundle_template_alter()
+
 ## Design Decisions/Rationale
 
 ##Contact

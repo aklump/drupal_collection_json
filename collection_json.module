@@ -6,49 +6,10 @@
  * @defgroup collection_json Collection Json
  * @{
  */
+use \AKlump\Http\CollectionJson\Collection;
 
 // Path to the admin settings form
 define('COLLECTION_JSON_URL_SETTINGS', 'admin/config/system/collection-json');
-
-/**
- * Implements hook_init().
- */
-// function collection_json_init() {
-//   //@todo should we not do this on every page?
-//   module_load_include('php', 'collection_json', 'vendor/autoload'); 
-// }
-
-// /**
-//  * Implements hook_permission().
-//  */
-// function collection_json_permission() {
-//  return array(
-//    'collection_json:administer' => array(
-//      'title' => t('Administer Collection Json'),
-//      'description' => t('Perform administration tasks for Collection Json.'),
-//      'restrict access' => FALSE,
-//    ),
-//  );
-// }
-
-// /**
-//  * Implements hook_menu().
-//  */
-// function collection_json_menu() {
-//   $items = array();
-
-//   $items[COLLECTION_JSON_URL_SETTINGS] = array(
-//    'title' => 'Collection Json',
-//    'description' => 'Administer module configuration settings',
-//    'page callback' => 'drupal_get_form',
-//    'page arguments' => array('collection_json_admin_settings'),
-//    'file' => collection_json_include('admin', 2),
-//    'access arguments' => array('collection_json:administer'),
-//    'type' => MENU_NORMAL_ITEM,
-//   );
-
-//   return $items;
-// }
 
 /**
  * Include (or return include path to) a collection_json include file(s)
@@ -148,4 +109,110 @@ function collection_json_rest_server_response_formatters_alter(&$formatters) {
  */
 function collection_json_load() {
   module_load_include('php', 'collection_json', 'vendor/autoload');
+}
+
+/**
+ * Implements hook_rest_server_execute_errors_alter().
+ */
+function collection_json_rest_server_execute_errors_alter($error_array, $controller, $arguments) {
+  $obj = collection_json_new_collection();
+  $title = str_replace(': ' . $error_array['body_data'], '', $error_array['header_message']);
+  $title = trim(str_replace($error_array['code'], '', $title));
+  $obj->setError(new \AKlump\Http\CollectionJson\Error($error_array['code'], $title, $error_array['body_data']));
+  $error_array['body_data'] = $obj;
+}
+
+/**
+ * Returns a new collection object with the current page as the href
+ *
+ * @return \AKlump\Http\CollectionJson\Collection
+ */
+function collection_json_new_collection() {
+  collection_json_load();
+
+  return new Collection(url(current_path(), array('absolute' => TRUE)));
+}
+
+/**
+ * Build an Item based on an entity.
+ *
+ * @param  string $entity_type E.g. node
+ * @param  object $entity      
+ * @param  string $uri         
+ * @param  array  $params      An optional array of custom params. These can be
+ *   used by the hook_alters.
+ *
+ * @return \AKlump\Http\CollectionJson\Item
+ */
+function collection_json_entity_item($entity_type, $entity, $uri, $params = array()) {
+  $href = services_resource_uri(array($uri));
+  $item = new \AKlump\Http\CollectionJson\Item($href);
+
+  
+
+  drupal_alter('collection_json_entity_item', $item, $entity_type, $entity, $params);
+
+  return $item;
+}
+
+/**
+ * Helper function to build a query data array for a resource/type
+ *
+ * @param  string $resource_name
+ * @param  string $crud_type Should be 'retrieve'||'index'
+ *
+ * @return array An array of Data objects.
+ */
+function collection_json_query_data($resource_name, $crud_type) {
+  $query_data = array();
+  if (!($r = services_get_resources()) || empty($r['cycles']['operations']['retrieve']['args'])) {
+    return $data;
+  }
+  foreach ($r[$resource_name]['operations'][$crud_type]['args'] as $data) {
+    if (isset($data['source']['param'])) {
+      $default  = array_key_exists('default value', $data) ? $data['default value'] : '';
+      $prompt   = isset($data['description']) ? $data['description'] : '';
+      $query_data[]   = new \AKlump\Http\CollectionJson\Data($data['source']['param'], $default, $prompt);
+    }
+  }
+
+  return $query_data;
+}
+
+/**
+ * Build a Template object based on an entity/bundle
+ *
+ * @param  string $entity_type
+ * @param  string $bundle_name
+ *
+ * @return \AKlump\Http\CollectionJson\Template
+ */
+function collection_json_bundle_template($entity_type, $bundle_name) {
+  $template = new \AKlump\Http\CollectionJson\Template();
+
+
+
+  drupal_alter('collection_json_bundle_template', $template, $entity_type, $bundle_name);
+
+  return $template;
+}
+
+/**
+ * Delete a node and set a 204 header per collection specs.
+ *
+ * @see  http://amundsen.com/media-types/collection/format/#general
+ *
+ * @param  int $nid
+ */
+function collection_json_node_resource_delete($bundle_type, $nid) {
+  if (!($node = node_load($nid)) || $node->type !== $bundle_type) {
+    return services_error('Resource not found', 404);
+  }
+  node_delete($nid);
+  if (node_load($nid)) {
+    return services_error('Could not delete resource.', 409);
+  }
+  else {
+    drupal_add_http_header('Status', '204 No Content');
+  }
 }

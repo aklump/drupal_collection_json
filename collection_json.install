@@ -1,0 +1,22 @@
+<?php
+/**
+ * @file
+ * Provides installation functions for the collection_json module.
+ *
+ * @ingroup collection_json
+ * @{
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function collection_json_uninstall() {
+  $vars = db_select('variable', 'v')
+    ->fields('v', array('name'))
+    ->condition('name', 'collection_json%', 'LIKE')
+    ->execute()->fetchCol();
+  foreach ($vars as $var) {
+    variable_del($var);
+  }
+}
+
