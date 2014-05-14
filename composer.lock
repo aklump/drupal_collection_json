@@ -7,16 +7,16 @@
     "packages": [
         {
             "name": "aklump/collection_json",
-            "version": "0.1",
+            "version": "0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aklump/collection_json.git",
-                "reference": "ffdeaa86831bcae1ee0429894042b69c99e5353c"
+                "reference": "32b06aa6021831dc803aa506aebffae98d5f7e31"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aklump/collection_json/zipball/ffdeaa86831bcae1ee0429894042b69c99e5353c",
-                "reference": "ffdeaa86831bcae1ee0429894042b69c99e5353c",
+                "url": "https://api.github.com/repos/aklump/collection_json/zipball/32b06aa6021831dc803aa506aebffae98d5f7e31",
+                "reference": "32b06aa6021831dc803aa506aebffae98d5f7e31",
                 "shasum": ""
             },
             "require": {
@@ -48,7 +48,7 @@
                 "json",
                 "vnd.collection"
             ],
-            "time": "2014-05-08 02:02:50"
+            "time": "2014-05-14 16:47:15"
         }
     ],
     "packages-dev": [

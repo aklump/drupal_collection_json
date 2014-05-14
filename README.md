@@ -14,6 +14,14 @@ You may also visit the [project page](http://www.drupal.org/project/collection_j
 1. Install as usual, see [http://drupal.org/node/70151](http://drupal.org/node/70151) for further information.
 
 ##Configuration
+1. If another module is providing the collection_json classes you need to add something like this to that file.
+
+        /**
+         * Implements hook_collection_json_config().
+         */
+        function MY_MODULE_collection_json_config_alter($config) {
+          $config->autoload = FALSE;
+        }
 
 ##Suggested Use
 

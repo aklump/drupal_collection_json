@@ -23,38 +23,52 @@ class CollectionJsonToJson implements ContentTypeTranslaterInterface {
       return $obj;
     }
     
-
     $source = json_decode($payload->getContent());
-    $items = $output = array();
+    $items = array();
+    $output = new \stdClass;
 
+    $root = 'collection';
     if (isset($source->collection->items)) {
       $items = $source->collection->items;
     }
     elseif (isset($source->template->data)) {
       $items = array((object) array('data' => $source->template->data));
+      $root = 'template';
     }
 
     foreach ($items as $item) {
       $output_item = new \stdClass;
-      foreach ($item->data as $data) {
-        $output_item->{$data->name} = $data->value;
+      if (isset($item->data)) {
+        foreach ($item->data as $data) {
+          $output_item->data->{$data->name} = $data->value;
+        }
       }
-      $output[] = $output_item;
+      if (isset($item->links)) {
+        foreach ($item->links as $link) {
+          if (!empty($link->name)) {
+            $render = isset($link->render) ? $link->render : 'link';
+            $key = $render . 's';
+            $output_item->{$key}->{$link->name} = $link->href;
+          }
+        }
+      }
+      $output->items[] = $output_item;
     }
 
+    if (!empty($output->items)) {
+      switch ($root) {
+        case 'collection':
+          $output = (object) array('collection' => $output);
+          break;
+        
+        case 'template':
+          $output = (object) array('template' => reset($output->items));
+          break;
+      }
+    }
 
     if (isset($source->collection->error)) {
-      $output[] = (object) array('error' => $source->collection->error);
-    }
-
-    // Reduce a single set to one object
-    if (count($output) === 1) {
-      $output = reset($output);
-    }
-
-    // Make an empty value an object
-    if (empty($output)) {
-      $output = (object) $output;
+      $output->error = $source->collection->error;
     }
 
     $obj->setContent(json_encode($output));

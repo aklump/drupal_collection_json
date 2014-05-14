@@ -108,7 +108,25 @@ function collection_json_rest_server_response_formatters_alter(&$formatters) {
  * includes/RESTServerCollectionJSON.php
  */
 function collection_json_load() {
-  module_load_include('php', 'collection_json', 'vendor/autoload');
+  if (collection_json_config()->autoload) {
+    module_load_include('php', 'collection_json', 'vendor/autoload');
+  }
+}
+
+/**
+ * Return a config array
+ *
+ * @return object
+ *   - autoload: TRUE if this module should load the classes from it's library.
+ */
+function collection_json_config() {
+  $config = &drupal_static(__FUNCTION__, new \stdClass);
+  if (empty($config)) {
+    $config->autoload = TRUE;
+    drupal_alter('collection_json_config', $config);
+  }
+
+  return $config;
 }
 
 /**
