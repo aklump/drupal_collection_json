@@ -1,23 +1,23 @@
 [
     {
         "name": "aklump/collection_json",
-        "version": "0.4",
-        "version_normalized": "0.4.0.0",
+        "version": "0.5",
+        "version_normalized": "0.5.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/aklump/collection_json.git",
-            "reference": "05178b6dff68fe82549c88f6136802c5487202ff"
+            "reference": "b9d24cf800131a541ce7206fb51e7e6e78141fe3"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/aklump/collection_json/zipball/05178b6dff68fe82549c88f6136802c5487202ff",
-            "reference": "05178b6dff68fe82549c88f6136802c5487202ff",
+            "url": "https://api.github.com/repos/aklump/collection_json/zipball/b9d24cf800131a541ce7206fb51e7e6e78141fe3",
+            "reference": "b9d24cf800131a541ce7206fb51e7e6e78141fe3",
             "shasum": ""
         },
         "require": {
             "php": ">=5.3.0"
         },
-        "time": "2014-05-14 17:54:25",
+        "time": "2014-05-15 21:03:30",
         "type": "library",
         "installation-source": "dist",
         "autoload": {

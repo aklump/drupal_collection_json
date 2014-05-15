@@ -7,6 +7,9 @@
  * @{
  */
 use \AKlump\Http\CollectionJson\Collection;
+use \AKlump\Http\CollectionJson\Link;
+use \AKlump\Http\CollectionJson\Data;
+use \AKlump\Http\CollectionJson\Item;
 
 // Path to the admin settings form
 define('COLLECTION_JSON_URL_SETTINGS', 'admin/config/system/collection-json');
@@ -163,8 +166,47 @@ function collection_json_new_collection() {
  * @return \AKlump\Http\CollectionJson\Item
  */
 function collection_json_entity_item($entity_type, $entity, $uri, $params = array()) {
+  module_load_include('inc', 'services', 'services.runtime');
   $href = services_resource_uri(array($uri));
   $item = new \AKlump\Http\CollectionJson\Item($href);
+
+  switch ($entity_type) {
+    case 'user':
+      $account = $entity;
+
+      // Add the user/123 page link.
+      if ($entity_href = entity_uri($entity_type, $entity)) {
+        $entity_href = url($entity_href['path'], array('absolute' => TRUE));
+        $item->addLink(new Link($entity_href, 'about', 'about', 'link', t('More info')));
+      }      
+
+      // Add the avatar link.
+      if (isset($account->picture)
+        && ($href = file_create_url($account->picture->uri))) {
+        $item->addLink(new Link($href, 'icon', 'avatar', 'image', t('User picture for @name', array('@name' => $account->name))));
+      }
+
+      $item->addData(new Data('uid', (int) $account->uid, t('User ID')));
+      $item->addData(new Data('user', $account->name, t('Username')));
+      $item->addData(new Data('mail', $account->mail, t('E-mail address')));
+      $item->addData(new Data('roles', (array) $account->roles, t('Roles')));
+      $item->addData(new Data('created', (int) $account->created, t('Created')));
+      $item->addData(new Data('access', (int) $account->access, t('Last access')));
+      if (!empty($account->language)) {
+        $item->addData(new Data('language', $account->language, t('Language')));
+      }
+      if (!empty($account->timezone)) { 
+        $item->addData(new Data('timezone', $account->timezone, t('Timezone')));
+      }
+      break;
+
+    case 'node':
+      $node = $entity;
+      if (!empty($node->title)) {
+        $item->addData(new Data('title', $node->title, t('Title')));
+      }
+      break;
+  }
 
   
 
@@ -208,7 +250,16 @@ function collection_json_query_data($resource_name, $crud_type) {
 function collection_json_bundle_template($entity_type, $bundle_name) {
   $template = new \AKlump\Http\CollectionJson\Template();
 
-
+  switch ($entity_type) {
+    case 'user':
+      $template->addData(new Data('user', '', t('Username')));
+      $template->addData(new Data('pass', '', t('Password')));
+      $template->addData(new Data('mail', '', t('E-mail address')));
+      // $template->addData(new Data('roles', '[]', t('Roles')));
+      // $template->addData(new Data('language', 'und', t('Language')));
+      $template->addData(new Data('timezone', date_default_timezone_get(), t('Timezone')));
+      break;
+  }
 
   drupal_alter('collection_json_bundle_template', $template, $entity_type, $bundle_name);
 
