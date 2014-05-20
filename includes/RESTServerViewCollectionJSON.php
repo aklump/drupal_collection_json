@@ -36,17 +36,16 @@ class RESTServerViewCollectionJSON extends RESTServerViewBuiltIn {
 
     // We might need to pull out the raw data if we have a Collection object
     // but the format is not collection object.
-    if ($this->model instanceof Collection
-      && $this->arguments['format'] !== 'collection_json') {
-      $this->model = json_decode(CollectionJsonToJson::translate($this->model)->getContent(), TRUE);
+    if ($this->model instanceof Collection) {
+      switch ($this->arguments['format']) {
+        case 'json':
+          return CollectionJsonToJson::translate($this->model)->getContent();
+        
+        case 'collection_json':
+          return $this->model->getContent();
+      }
     }
 
-    // Now parse as needed
-    if ($this->arguments['format'] === 'collection_json') {
-      return $this->model->getContent();
-    }
-    else {
-      return parent::render();
-    }
+    return parent::render();
   }
 }
