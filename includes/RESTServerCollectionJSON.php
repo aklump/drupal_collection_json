@@ -23,7 +23,10 @@ class RESTServerCollectionJSON extends RESTServer {
     if (($source = self::contentFromStream($handle))) {
       collection_json_load();
       $source = new Payload('application/vnd.collection+json', $source);
-      $data = json_decode(CollectionJsonToJson::translate($source)->getContent(), TRUE);
+      $result = CollectionJsonToJson::translate($source)->getContent();
+      if (!($data = json_decode($result, TRUE))) {
+        return services_error($result, 406);
+      }
     }
 
     return $data;
