@@ -111,7 +111,7 @@ function collection_json_rest_server_response_formatters_alter(&$formatters) {
  * includes/RESTServerCollectionJSON.php
  */
 function collection_json_load() {
-  if (collection_json_config()->autoload) {
+  if (!empty(collection_json_config()->autoload)) {
     module_load_include('php', 'collection_json', 'vendor/autoload');
   }
 }
