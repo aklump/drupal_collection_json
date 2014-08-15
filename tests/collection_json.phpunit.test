@@ -25,9 +25,9 @@ class CollectionJsonPhpUnitTestProxy extends DrupalUnitTestCase {
 
   public static function getInfo() {
     return array(
-      'name' => 'Collection Json PhpUnit Proxy',
-      'description' => 'Test runner for PhpUnit tests in the Collection Json module.',
-      'group' => 'Collection Json Units',
+      'name' => 'Collection JSON PhpUnit Proxy',
+      'description' => 'Test runner for PhpUnit tests in the Collection JSON module.',
+      'group' => 'Collection JSON',
     );
   }
 

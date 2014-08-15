@@ -14,4 +14,4 @@ files[] = includes/RESTServerViewCollectionJSON.php
 
 
 ;files[] = tests/collection_json.test
-;files[] = tests/collection_json.phpunit.test
+files[] = tests/collection_json.phpunit.test
