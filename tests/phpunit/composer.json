@@ -1,0 +1,9 @@
+{
+  "autoload": {
+    "files": [
+      "../loft_testing/phpunit/drupal7_mocks.php",
+      "../../collection_json.module",
+      "../../collection_json.install"
+    ]
+  }
+}

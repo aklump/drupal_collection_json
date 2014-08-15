@@ -6,6 +6,9 @@ core = 7.x
 
 dependencies[] = rest_server
 
+files[] = includes/CollectionJSONParserCollectionJSON.php
+files[] = includes/CollectionJSONJSONFormatter.php
+files[] = includes/CollectionJSONCollectionJSONFormatter.php
 files[] = includes/RESTServerCollectionJSON.php
 files[] = includes/RESTServerViewCollectionJSON.php
 

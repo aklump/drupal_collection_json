@@ -1,0 +1,5 @@
+name = "Loft Testing"
+description = "Helper classes and functions for various testing scenarios, e.g., phpunit, simpletest."
+homepage = http://www.intheloftstudios.com/packages/php/loft_testing
+version = 0.0.6
+author = Aaron Klump <sourcecode@intheloftstudios.com>

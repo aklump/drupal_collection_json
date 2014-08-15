@@ -3,6 +3,7 @@
  * @file
  * Defines an extension class for parseing Collection+Json
  */
+
 use \AKlump\Http\CollectionJson\CollectionJsonToJson;
 use \AKlump\Http\Transfer\Payload;
 

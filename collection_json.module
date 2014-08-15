@@ -56,12 +56,12 @@ function collection_json_include() {
   }
 }
 
-/**
- * Implements hook_admin_paths().
- */
-function collection_json_admin_paths() {
-  return array('help/*');
-}
+// /**
+//  * Implements hook_admin_paths().
+//  */
+// function collection_json_admin_paths() {
+//   return array('help/*');
+// }
 
 /**
  * Triggered when the REST server request a list of available request parsers.
@@ -71,7 +71,46 @@ function collection_json_admin_paths() {
  * @return void
  */
 function collection_json_rest_server_request_parsers_alter(&$parsers) {
-  $parsers['application/vnd.collection+json'] = 'RESTServerCollectionJSON::parseCollectionJSON';
+  if (_collection_json_version_gt_3_4()) {
+    $parsers['application/vnd.collection+json'] = 'CollectionJSONParserCollectionJSON';
+  }
+  else {
+    $parsers['application/vnd.collection+json'] = 'RESTServerCollectionJSON::parseCollectionJSON';
+  }
+}
+
+
+/**
+ * Deterimines if module version string $a >= $b.
+ *
+ * @param  string $a e.g., 7.x-3.3
+ * @param  string $b e.g., 7.x-3.4
+ *
+ * @return bool
+ */
+function _collection_json_version_compare($a, $b) {
+  return version_compare($a, $b, '>=');
+}
+
+/**
+ * Determines if our services version is >= 7.x-3.4 when the schema changed.
+ *
+ * Important to use this function because it provides static caching.
+ *
+ * @return bool
+ */
+function _collection_json_version_gt_3_4() {
+  static $drupal_static_fast;
+  if (!isset($drupal_static_fast)) {
+    $drupal_static_fast['result'] = &drupal_static(__FUNCTION__);
+  }
+  $result = &$drupal_static_fast['result'];
+  if (!isset($result)) {
+    $info = system_get_info('module', 'rest_server');
+    $result = _collection_json_version_compare($info['version'], '7.x-3.4');
+  }
+  
+  return $result;
 }
 
 /**
@@ -88,19 +127,39 @@ function collection_json_rest_server_request_parsers_alter(&$parsers) {
  */
 function collection_json_rest_server_response_formatters_alter(&$formatters) {
 
-  // Set this up to be able to convert our custom object if needed
-  foreach ($formatters as $key => $value) {
-    if ($formatters[$key]['view'] === 'RESTServerViewBuiltIn') {
-      $formatters[$key]['view arguments']['view'] = $formatters[$key]['view'];
-      $formatters[$key]['view'] = 'RESTServerViewCollectionJSON';
-    }
+  // The new format started in 7.x-3.4.
+  if (_collection_json_version_gt_3_4()) {
+
+    // Adds our collection_json formatter.
+    $formatters['collection_json'] = array(
+      'mime types' => array('application/vnd.collection+json'),
+      'formatter class' => 'CollectionJSONCollectionJSONFormatter',
+    );
+
+    // Set up a formatter than will convert a CollectionJSON object to
+    // plain JSON.
+    $formatters['json']['formatter class'] = 'CollectionJSONJSONFormatter'; 
   }
 
-  $formatters['collection_json'] = array(
-    'mime types' => array('application/vnd.collection+json'),
-    'view' => 'RESTServerViewCollectionJSON',
-    'view arguments' => array('format' => 'collection_json'),
-  );
+  // This is the old format when version was < 7.x-3.4.
+  else {
+    
+    // Adds our collection_json formatter.
+    $formatters['collection_json'] = array(
+      'mime types' => array('application/vnd.collection+json'),
+      'view' => 'RESTServerViewCollectionJSON',
+      'view arguments' => array('format' => 'collection_json'),
+    );    
+
+    // Set up a formatter than will convert a CollectionJSON object to
+    // plain JSON.
+    foreach ($formatters as $key => $value) {
+      if ($formatters[$key]['view'] === 'RESTServerViewBuiltIn') {
+        $formatters[$key]['view'] = 'RESTServerViewCollectionJSON';
+        $formatters[$key]['view arguments']['view'] = 'RESTServerViewBuiltIn';
+      }
+    }
+  }
 }
 
 /**
@@ -134,13 +193,15 @@ function collection_json_config() {
 
 /**
  * Implements hook_rest_server_execute_errors_alter().
+ *
+ * Turns errors into collection objects.
  */
-function collection_json_rest_server_execute_errors_alter($error_array, $controller, $arguments) {
+function collection_json_rest_server_execute_errors_alter(&$error_alter_array, $controller, $arguments) {
   $obj = collection_json_new_collection();
-  $title = str_replace(': ' . $error_array['body_data'], '', $error_array['header_message']);
-  $title = trim(str_replace($error_array['code'], '', $title));
-  $obj->setError(new \AKlump\Http\CollectionJson\Error($error_array['code'], $title, $error_array['body_data']));
-  $error_array['body_data'] = $obj;
+  $title = str_replace(': ' . $error_alter_array['body_data'], '', $error_alter_array['header_message']);
+  $title = trim(str_replace($error_alter_array['code'], '', $title));
+  $obj->setError(new \AKlump\Http\CollectionJson\Error($error_alter_array['code'], $title, $error_alter_array['body_data']));
+  $error_alter_array['body_data'] = $obj;
 }
 
 /**
@@ -248,22 +309,30 @@ function collection_json_query_data($resource_name, $crud_type) {
  * @return \AKlump\Http\CollectionJson\Template
  */
 function collection_json_bundle_template($entity_type, $bundle_name) {
-  $template = new \AKlump\Http\CollectionJson\Template();
-
-  switch ($entity_type) {
-    case 'user':
-      $template->addData(new Data('user', '', t('Username')));
-      $template->addData(new Data('pass', '', t('Password')));
-      $template->addData(new Data('mail', '', t('E-mail address')));
-      // $template->addData(new Data('roles', '[]', t('Roles')));
-      // $template->addData(new Data('language', 'und', t('Language')));
-      $template->addData(new Data('timezone', date_default_timezone_get(), t('Timezone')));
-      break;
+  static $drupal_static_fast;
+  if (!isset($drupal_static_fast)) {
+    $drupal_static_fast['templates'] = &drupal_static(__FUNCTION__, array());
   }
+  $templates = &$drupal_static_fast['templates'];
+  if (!isset($templates[$entity_type][$bundle_name])) {
+    $templates[$entity_type][$bundle_name] = new \AKlump\Http\CollectionJson\Template();
 
-  drupal_alter('collection_json_bundle_template', $template, $entity_type, $bundle_name);
+    switch ($entity_type) {
+      case 'user':
+        $templates[$entity_type][$bundle_name]->addData(new Data('user', '', t('Username')));
+        $templates[$entity_type][$bundle_name]->addData(new Data('pass', '', t('Password')));
+        $templates[$entity_type][$bundle_name]->addData(new Data('mail', '', t('E-mail address')));
+        // $templates[$entity_type][$bundle_name]->addData(new Data('roles', '[]', t('Roles')));
+        // $templates[$entity_type][$bundle_name]->addData(new Data('language', 'und', t('Language')));
+        $templates[$entity_type][$bundle_name]->addData(new Data('timezone', date_default_timezone_get(), t('Timezone')));
+        break;
+    }
 
-  return $template;
+    drupal_alter('collection_json_bundle_template', $templates[$entity_type][$bundle_name], $entity_type, $bundle_name);
+
+  }
+  
+  return $templates[$entity_type][$bundle_name];
 }
 
 /**
