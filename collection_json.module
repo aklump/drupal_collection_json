@@ -195,13 +195,64 @@ function collection_json_config() {
  * Implements hook_rest_server_execute_errors_alter().
  *
  * Turns errors into collection objects.
+ *   - body_data becomes the message
+ *   - title is the header_message without the code.
  */
 function collection_json_rest_server_execute_errors_alter(&$error_alter_array, $controller, $arguments) {
   $obj = collection_json_new_collection();
-  $title = str_replace(': ' . $error_alter_array['body_data'], '', $error_alter_array['header_message']);
-  $title = trim(str_replace($error_alter_array['code'], '', $title));
-  $obj->setError(new \AKlump\Http\CollectionJson\Error($error_alter_array['code'], $title, $error_alter_array['body_data']));
+  list($code, $title, $message) = _collection_json_parse_error_array($error_alter_array);
+  $obj->setError(new \AKlump\Http\CollectionJson\Error($code, $title, $message));
+  
+  // Change the body from text/html to collection object.
   $error_alter_array['body_data'] = $obj;
+}
+
+/**
+ * Pull out code, title, message for collection object from error array.
+ *
+ * @code
+ *   list($code, $title, $message) = _collection_json_split_error_string(...
+ * @endcode
+ *
+ * @param  array $error_alter_array
+ *
+ * @return array
+ *   - 0: code int
+ *   - 1: title string
+ *   - 2: message string If empty and title contains a :, the text to the right
+ *   of the title will be used.  Otherwise if empty, the title.
+ */
+function _collection_json_parse_error_array($error_alter_array) {
+  preg_match('/([\d]+)[\s:]*(.+)/', $error_alter_array['header_message'], $matches);
+
+  $code     = (int) (empty($error_alter_array['code']) ? $matches[1] : $error_alter_array['code']);
+  $title    = trim($matches[2]);
+
+  if (empty($error_alter_array['body_data'])) {
+    preg_match('/(.*:\s)?(.+)/', $title, $matches);
+    $message = $matches[2];
+    if ($matches[1]) {
+      $title = $matches[1];
+    }
+  }
+  else {
+    $message = $error_alter_array['body_data'];
+  }
+
+  $title = trim($title, ': ');
+
+  // If title and message are the same and we have a colon, then split.
+  if ($title === $message && preg_match('/(.*:\s)?(.+)/', $title, $matches)) {
+    $title    = $matches[1];
+    $message  = $matches[2];
+  }
+  elseif ($title !== $message && strstr($title, $message)) {
+    $title = str_replace($message, '', $title);
+  }
+
+  $title    = empty($title) ? $message : $title;
+
+  return array($code, trim($title, ': '), $message);
 }
 
 /**
