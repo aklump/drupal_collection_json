@@ -356,10 +356,12 @@ function collection_json_query_data($resource_name, $crud_type) {
  *
  * @param  string $entity_type
  * @param  string $bundle_name
+ * @param  string $context array
+ *   Allows passing of arbitraty data to alter hooks.
  *
  * @return \AKlump\Http\CollectionJson\Template
  */
-function collection_json_bundle_template($entity_type, $bundle_name) {
+function collection_json_bundle_template($entity_type, $bundle_name, $context = array()) {
   static $drupal_static_fast;
   if (!isset($drupal_static_fast)) {
     $drupal_static_fast['templates'] = &drupal_static(__FUNCTION__, array());
@@ -379,8 +381,7 @@ function collection_json_bundle_template($entity_type, $bundle_name) {
         break;
     }
 
-    drupal_alter('collection_json_bundle_template', $templates[$entity_type][$bundle_name], $entity_type, $bundle_name);
-
+    drupal_alter('collection_json_bundle_template', $templates[$entity_type][$bundle_name], $entity_type, $bundle_name, $context);
   }
   
   return $templates[$entity_type][$bundle_name];
