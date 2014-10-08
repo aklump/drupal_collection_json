@@ -305,7 +305,7 @@ function collection_json_entity_item($entity_type, $entity, $uri, $params = arra
       $item->addData(new Data('created', (int) $account->created, t('Created')));
       $item->addData(new Data('access', (int) $account->access, t('Last access')));
       if (!empty($account->language)) {
-        $item->addData(new Data('language', $account->language, t('Language')));
+        $item->addData(new Data('language', $account->language, t('Preferred language')));
       }
       if (!empty($account->timezone)) { 
         $item->addData(new Data('timezone', $account->timezone, t('Timezone')));
@@ -358,6 +358,8 @@ function collection_json_query_data($resource_name, $crud_type) {
  * @param  string $bundle_name
  * @param  string $context array
  *   Allows passing of arbitraty data to alter hooks.
+ *   - user
+ *   - node
  *
  * @return \AKlump\Http\CollectionJson\Template
  */
@@ -372,12 +374,33 @@ function collection_json_bundle_template($entity_type, $bundle_name, $context = 
 
     switch ($entity_type) {
       case 'user':
-        $templates[$entity_type][$bundle_name]->addData(new Data('user', '', t('Username')));
-        $templates[$entity_type][$bundle_name]->addData(new Data('pass', '', t('Password')));
-        $templates[$entity_type][$bundle_name]->addData(new Data('mail', '', t('E-mail address')));
+        $defaults = array(
+          'user' => '',
+          'pass' => '',
+          'mail' => '',
+          'language' => language_default()->language,
+          'timezone' => date_default_timezone_get(),
+        );
+        if (isset($context['user'])) {
+
+          // We want the default 'und' to fill in an empty language.
+          if (empty($context['user']->language)) {
+            unset($context['user']->language);
+          }
+
+          // This will not be passed, ever.
+          $context['user']->pass = '';
+
+          $defaults = array(
+            'user' => $context['user']->name,
+          ) + (array) $context['user'] + $defaults;
+        }
+        $templates[$entity_type][$bundle_name]->addData(new Data('user', $defaults['user'], t('Username')));
+        $templates[$entity_type][$bundle_name]->addData(new Data('pass', $defaults['pass'], t('Password')));
+        $templates[$entity_type][$bundle_name]->addData(new Data('mail', $defaults['mail'], t('E-mail address')));
         // $templates[$entity_type][$bundle_name]->addData(new Data('roles', '[]', t('Roles')));
-        // $templates[$entity_type][$bundle_name]->addData(new Data('language', 'und', t('Language')));
-        $templates[$entity_type][$bundle_name]->addData(new Data('timezone', date_default_timezone_get(), t('Timezone')));
+        $templates[$entity_type][$bundle_name]->addData(new Data('language', $defaults['language'], t('Preferred language')));
+        $templates[$entity_type][$bundle_name]->addData(new Data('timezone', $defaults['timezone'], t('Timezone')));
         break;
     }
 
