@@ -13,7 +13,6 @@
  * @{
  */
 use AKlump\LoftTesting\Simpletest\PhpUnitTestProxy as DrupalUnitTestCase;
-require_once dirname(__FILE__) . '/loft_testing/vendor/autoload.php';
 
 class CollectionJsonPhpUnitTestProxy extends DrupalUnitTestCase {
 

@@ -6,7 +6,6 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    $baseDir . '/../loft_testing/phpunit/drupal7_mocks.php',
     $baseDir . '/../../collection_json.module',
     $baseDir . '/../../collection_json.install',
 );

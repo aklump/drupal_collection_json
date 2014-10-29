@@ -6,8 +6,7 @@
  * @ingroup collection_json
  * @{
  */
-require_once 'vendor/autoload.php';
-// install with composer dumpautoload
+require_once dirname(__FILE__) . '/vendor/autoload.php';
 
 class CollectionJsonTest extends \PHPUnit_Framework_TestCase {
 

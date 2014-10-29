@@ -15,3 +15,5 @@ files[] = includes/RESTServerViewCollectionJSON.php
 
 ;files[] = tests/collection_json.test
 files[] = tests/collection_json.phpunit.test
+
+dependencies[] = loft_testing
