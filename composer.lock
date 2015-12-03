@@ -9,16 +9,16 @@
     "packages": [
         {
             "name": "aklump/collection_json",
-            "version": "0.8.2",
+            "version": "0.8.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aklump/collection_json.git",
-                "reference": "a7267dd58d5ed48c568294cd68a211be815457f1"
+                "reference": "f170e56a2a4cf80462bed7af16497ab7e5406b8f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aklump/collection_json/zipball/a7267dd58d5ed48c568294cd68a211be815457f1",
-                "reference": "a7267dd58d5ed48c568294cd68a211be815457f1",
+                "url": "https://api.github.com/repos/aklump/collection_json/zipball/f170e56a2a4cf80462bed7af16497ab7e5406b8f",
+                "reference": "f170e56a2a4cf80462bed7af16497ab7e5406b8f",
                 "shasum": ""
             },
             "require": {
@@ -54,7 +54,7 @@
                 "json",
                 "vnd.collection"
             ],
-            "time": "2015-12-03 02:50:32"
+            "time": "2015-12-03 03:09:54"
         },
         {
             "name": "spatie/array-to-xml",
