@@ -1,7 +1,7 @@
 name = Collection+Json
 description = "Provides a Collection+Json parser and formatter to the Services REST module."
 package = Other
-version = "7.x-0.2-rc15"
+version = "7.x-0.2-rc16"
 core = 7.x
 
 dependencies[] = rest_server
