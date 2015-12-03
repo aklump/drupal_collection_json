@@ -8,7 +8,7 @@
 /**
  * Implements hook_collection_json_entity_item_alter().
  */
-function hook_collection_json_entity_item_alter($item, $entity_type, $entity) {
+function hook_collection_json_entity_item_alter(&$item, $entity_type, $entity) {
   
 }
 

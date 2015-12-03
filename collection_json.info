@@ -1,17 +1,16 @@
 name = Collection+Json
 description = "Provides a Collection+Json parser and formatter to the Services REST module."
 package = Other
-version = 7.x-0.2-rc12
+version = "7.x-0.2-rc16"
 core = 7.x
 
 dependencies[] = rest_server
 
-files[] = includes/CollectionJSONParserCollectionJSON.php
-files[] = includes/CollectionJSONJSONFormatter.php
-files[] = includes/CollectionJSONCollectionJSONFormatter.php
-files[] = includes/RESTServerCollectionJSON.php
-files[] = includes/RESTServerViewCollectionJSON.php
+files[] = includes/CollectionJsonParserCollectionJson.php
+files[] = includes/CollectionJsonJsonFormatter.php
+files[] = includes/CollectionJsonXmlFormatter.php
+files[] = includes/CollectionJsonCollectionJsonFormatter.php
+files[] = includes/RESTServerCollectionJson.php
+files[] = includes/RESTServerViewCollectionJson.php
 
-
-;files[] = tests/collection_json.test
 files[] = tests/collection_json.phpunit.test

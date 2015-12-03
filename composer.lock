@@ -1,32 +1,38 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
     ],
     "hash": "16bebfbae12d61655aa9548e9202186c",
+    "content-hash": "161b67f5d048d9259801c45633731a80",
     "packages": [
         {
             "name": "aklump/collection_json",
-            "version": "0.7.2",
+            "version": "0.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aklump/collection_json.git",
-                "reference": "3bc4d5c5c1400640ed09cfdf8d38d95fde8b0985"
+                "reference": "58ef3270f19ef0419918f3769d5bff63e215246d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aklump/collection_json/zipball/3bc4d5c5c1400640ed09cfdf8d38d95fde8b0985",
-                "reference": "3bc4d5c5c1400640ed09cfdf8d38d95fde8b0985",
+                "url": "https://api.github.com/repos/aklump/collection_json/zipball/58ef3270f19ef0419918f3769d5bff63e215246d",
+                "reference": "58ef3270f19ef0419918f3769d5bff63e215246d",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.0"
+                "php": ">=5.3.0",
+                "spatie/array-to-xml": "^2.0"
             },
             "type": "library",
             "autoload": {
                 "psr-0": {
                     "AKlump\\": "src/"
-                }
+                },
+                "files": [
+                    "lib/loft_php_lib/dist/vendor/autoload.php"
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -48,23 +54,64 @@
                 "json",
                 "vnd.collection"
             ],
-            "time": "2014-05-22 22:38:36"
+            "time": "2015-12-03 02:03:40"
+        },
+        {
+            "name": "spatie/array-to-xml",
+            "version": "2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/array-to-xml.git",
+                "reference": "52c335d08b96cb18f1198ec3bb6d90b8c860923e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/array-to-xml/zipball/52c335d08b96cb18f1198ec3bb6d90b8c860923e",
+                "reference": "52c335d08b96cb18f1198ec3bb6d90b8c860923e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "0.9.*",
+                "phpunit/phpunit": "4.*",
+                "scrutinizer/ocular": "~1.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\ArrayToXml\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "homepage": "https://murze.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Convert an array to xml",
+            "homepage": "https://github.com/spatie/array-to-xml",
+            "keywords": [
+                "array",
+                "convert",
+                "xml"
+            ],
+            "time": "2015-10-08 17:55:17"
         }
     ],
-    "packages-dev": [
-
-    ],
-    "aliases": [
-
-    ],
+    "packages-dev": [],
+    "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [
-
-    ],
-    "platform": [
-
-    ],
-    "platform-dev": [
-
-    ]
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
 }

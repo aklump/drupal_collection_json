@@ -6,4 +6,5 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Spatie\\ArrayToXml\\' => array($vendorDir . '/spatie/array-to-xml/src'),
 );
