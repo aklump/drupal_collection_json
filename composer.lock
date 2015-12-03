@@ -9,16 +9,16 @@
     "packages": [
         {
             "name": "aklump/collection_json",
-            "version": "0.8.3",
+            "version": "0.8.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aklump/collection_json.git",
-                "reference": "f170e56a2a4cf80462bed7af16497ab7e5406b8f"
+                "reference": "fd663a93d0b447c230b703c062eae1daf9eb2dba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aklump/collection_json/zipball/f170e56a2a4cf80462bed7af16497ab7e5406b8f",
-                "reference": "f170e56a2a4cf80462bed7af16497ab7e5406b8f",
+                "url": "https://api.github.com/repos/aklump/collection_json/zipball/fd663a93d0b447c230b703c062eae1daf9eb2dba",
+                "reference": "fd663a93d0b447c230b703c062eae1daf9eb2dba",
                 "shasum": ""
             },
             "require": {
@@ -31,7 +31,7 @@
                     "AKlump\\": "src/"
                 },
                 "files": [
-                    "lib/loft_php_lib/dist/vendor/autoload.php"
+                    "lib/loft_php_lib/dist/vendor/composer/autoload.php"
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -54,7 +54,7 @@
                 "json",
                 "vnd.collection"
             ],
-            "time": "2015-12-03 03:09:54"
+            "time": "2015-12-03 03:19:12"
         },
         {
             "name": "spatie/array-to-xml",
