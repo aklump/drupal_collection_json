@@ -133,12 +133,16 @@ function collection_json_rest_server_response_formatters_alter(&$formatters) {
     // Adds our collection_json formatter.
     $formatters['collection_json'] = array(
       'mime types' => array('application/vnd.collection+json'),
-      'formatter class' => 'CollectionJSONCollectionJSONFormatter',
+      'formatter class' => 'CollectionJsonCollectionJsonFormatter',
     );
 
     // Set up a formatter than will convert a CollectionJSON object to
     // plain JSON.
-    $formatters['json']['formatter class'] = 'CollectionJSONJSONFormatter'; 
+    $formatters['json']['formatter class'] = 'CollectionJsonJsonFormatter'; 
+
+    // Set up a formatter than will convert a CollectionJSON object to
+    // plain XML.
+    $formatters['xml']['formatter class'] = 'CollectionJsonXmlFormatter'; 
   }
 
   // This is the old format when version was < 7.x-3.4.
