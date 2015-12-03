@@ -52,24 +52,24 @@
     },
     {
         "name": "aklump/collection_json",
-        "version": "0.8.4",
-        "version_normalized": "0.8.4.0",
+        "version": "0.8.5",
+        "version_normalized": "0.8.5.0",
         "source": {
             "type": "git",
             "url": "https://github.com/aklump/collection_json.git",
-            "reference": "fd663a93d0b447c230b703c062eae1daf9eb2dba"
+            "reference": "8f0c487fc722be17b6e231ea03da3b62ce4c1c04"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/aklump/collection_json/zipball/fd663a93d0b447c230b703c062eae1daf9eb2dba",
-            "reference": "fd663a93d0b447c230b703c062eae1daf9eb2dba",
+            "url": "https://api.github.com/repos/aklump/collection_json/zipball/8f0c487fc722be17b6e231ea03da3b62ce4c1c04",
+            "reference": "8f0c487fc722be17b6e231ea03da3b62ce4c1c04",
             "shasum": ""
         },
         "require": {
             "php": ">=5.3.0",
             "spatie/array-to-xml": "^2.0"
         },
-        "time": "2015-12-03 03:19:12",
+        "time": "2015-12-03 04:01:57",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -77,7 +77,7 @@
                 "AKlump\\": "src/"
             },
             "files": [
-                "lib/loft_php_lib/dist/vendor/composer/autoload.php"
+                "lib/loft_php_lib/dist/vendor/autoload.php"
             ]
         },
         "notification-url": "https://packagist.org/downloads/",
